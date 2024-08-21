@@ -1,20 +1,15 @@
 .table-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.data-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.data-table th, .data-table td {
+.table-wrapper th, .table-wrapper td {
   border: 1px solid var(--light-color);
   padding: 8px;
   text-align: left;
 }
 
-.data-table th {
+.table-wrapper th {
   background-color: var(--light-color);
 }
 

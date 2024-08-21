@@ -1,97 +1,101 @@
-// Function to update table content
-async function updateContent(url, offset) {
-  const existingWrapper = document.querySelector('.table-wrapper');
-  if (existingWrapper) {
-    const newWrapper = await createTableStructure(url, offset);
-    existingWrapper.replaceWith(newWrapper);
+function createTableHeader(container) {
+  const table = document.createElement('table');
+  table.classList.add('table-wrapper');
+  const thead = document.createElement('thead');
+  const tr = document.createElement('tr');
+
+  const headers = ['ID', 'Countries', 'Continent'];
+  headers.forEach((headerText) => {
+    const th = document.createElement('th');
+    th.textContent = headerText;
+    tr.append(th);
+  });
+
+  thead.append(tr);
+  table.append(thead);
+  container.append(table);
+  return table;
+}
+
+function createTableRow(table, row, i) {
+  const tbody = table.querySelector('tbody') || document.createElement('tbody');
+  const tr = document.createElement('tr');
+
+  const data = [i, row.Country, row.Continent];
+  data.forEach((dataItemText) => {
+    const td = document.createElement('td');
+    td.textContent = dataItemText;
+    tr.append(td);
+  });
+
+  tbody.append(tr);
+  if (!table.querySelector('tbody')) {
+    table.append(tbody);
   }
 }
 
-// Function to create header row
-function createHeaderRow(table) {
-  const headers = ['ID', 'Country', 'Continent'];
-  const headerRow = document.createElement('tr');
+async function fetchData(jsonURL, offset, limit) {
+  const url = new URL(jsonURL);
+  url.searchParams.set('offset', offset);
+  url.searchParams.set('limit', limit);
 
-  headers.forEach((header) => {
-    const th = document.createElement('th');
-    th.textContent = header;
-    headerRow.appendChild(th);
-  });
-
-  table.appendChild(headerRow);
+  const response = await fetch(url);
+  const json = await response.json();
+  return json.data;
 }
 
-// Function to create a data row
-function createDataRow(table, row, index) {
-  const dataRow = document.createElement('tr');
+function renderTable(container, data, offset) {
+  container.innerHTML = '';
 
-  const data = [index, row.Country, row.Continent];
-
-  data.forEach((item) => {
-    const td = document.createElement('td');
-    td.textContent = item;
-    dataRow.appendChild(td);
+  const table = createTableHeader(container);
+  data.forEach((row, i) => {
+    createTableRow(table, row, offset + i + 1);
   });
-
-  table.appendChild(dataRow);
 }
 
-// Function to create table structure with data and pagination
-async function createTableStructure(url, offset = 0, limit = 10) {
-  const fullUrl = `${url}?offset=${offset}&limit=${limit}`;
-  const response = await fetch(fullUrl);
-  const data = await response.json();
-
-  // Create a wrapper div
-  const wrapperDiv = document.createElement('div');
-  wrapperDiv.className = 'table-wrapper';
-
-  const table = document.createElement('table');
-  table.className = 'data-table';
-
-  createHeaderRow(table);
-
-  data.data.forEach((row, index) => {
-    createDataRow(table, row, offset + index + 1);
-  });
-
-  // Append the table to the wrapper
-  wrapperDiv.appendChild(table);
-
-  // Pagination controls
+function createPagination(container, jsonURL, offset, limit, totalRecords) {
   const paginationDiv = document.createElement('div');
   paginationDiv.className = 'pagination-controls';
 
   const prevButton = document.createElement('button');
   prevButton.textContent = 'Previous';
   prevButton.disabled = offset === 0;
-  prevButton.addEventListener('click', () => {
-    updateContent(url, Math.max(0, offset - limit));
+  prevButton.addEventListener('click', async () => {
+    const newOffset = Math.max(0, offset - limit);
+    const newData = await fetchData(jsonURL, newOffset, limit);
+    renderTable(container, newData, newOffset);
+    createPagination(container, jsonURL, newOffset, limit, totalRecords);
   });
 
   const nextButton = document.createElement('button');
   nextButton.textContent = 'Next';
-  nextButton.disabled = offset === 40;
-  nextButton.addEventListener('click', () => {
-    updateContent(url, offset + limit);
+  nextButton.disabled = offset + limit >= totalRecords;
+  nextButton.addEventListener('click', async () => {
+    const newOffset = offset + limit;
+    const newData = await fetchData(jsonURL, newOffset, limit);
+    renderTable(container, newData, newOffset);
+    createPagination(container, jsonURL, newOffset, limit, totalRecords);
   });
 
   paginationDiv.append(prevButton, nextButton);
-
-  // Append the pagination controls next to the table
-  wrapperDiv.appendChild(paginationDiv);
-
-  return wrapperDiv;
+  container.append(paginationDiv);
 }
 
 export default async function decorate(block) {
-  const link = block.querySelector('a[href$=".json"]');
-  if (!link) return;
+  const jsonLink = block.querySelector('a[href$=".json"]');
+  const wrapperDiv = document.createElement('div');
+  wrapperDiv.className = 'data-wrapper';
 
-  const parentDiv = document.createElement('div');
-  parentDiv.className = 'countries-block';
+  if (jsonLink) {
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'data-content';
 
-  const initialTable = await createTableStructure(link.href);
-  parentDiv.appendChild(initialTable);
-  link.replaceWith(parentDiv);
+    wrapperDiv.append(contentDiv);
+
+    const initialData = await fetchData(jsonLink.href, 0, 10);
+    renderTable(contentDiv, initialData, 0);
+    createPagination(contentDiv, jsonLink.href, 0, 10, 50);
+
+    jsonLink.replaceWith(wrapperDiv);
+  }
 }

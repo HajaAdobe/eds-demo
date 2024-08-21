@@ -313,9 +313,10 @@ main .section.highlight {
   position: relative;
   padding-left: 30px;
 }
+
 .custom-icon a.button::after {
   content: '';
-  background: url(/icons/search.svg) no-repeat center center;
+  background: url('/icons/search.svg') no-repeat center center;
   background-size: 1em;
   width: 30px;
   height: 100%;

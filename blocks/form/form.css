@@ -30,6 +30,7 @@ main .form select:hover {
 }
 
 main .form label {
+  width: 72%;
   display: block;
   padding-bottom: var(--spacing-xxs);
   box-sizing: border-box;
@@ -44,6 +45,8 @@ main .form label.required::after {
 }
 
 main .form .field-wrapper {
+  display: flex;
+  justify-content: right;
   margin-bottom: var(--spacing-m);
 }
 
@@ -103,19 +106,4 @@ main .form-legal-wrapper p {
 
 main .form button {
   font-family: var(--body-font-family);
-}
-
-@media screen and (min-width: 900px) {
-  main .form {
-    padding: var(--spacing-ml);
-  }
-  
-  main .form .field-wrapper {
-    display: flex;
-    justify-content: right;
-  }
-
-  main .form label {
-    width: 72%;
-  }
 }
