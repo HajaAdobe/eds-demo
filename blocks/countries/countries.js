@@ -1,3 +1,12 @@
+// Function to update table content
+async function updateContent(url, offset) {
+  const existingWrapper = document.querySelector('.table-wrapper');
+  if (existingWrapper) {
+    const newWrapper = await createTableStructure(url, offset);
+    existingWrapper.replaceWith(newWrapper);
+  }
+}
+
 // Function to create header row
 function createHeaderRow(table) {
   const headers = ['ID', 'Country', 'Continent'];
@@ -73,14 +82,6 @@ async function createTableStructure(url, offset = 0, limit = 10) {
   wrapperDiv.appendChild(paginationDiv);
 
   return wrapperDiv;
-}
-
-async function updateContent(url, offset) {
-  const existingWrapper = document.querySelector('.table-wrapper');
-  if (existingWrapper) {
-    const newWrapper = await createTableStructure(url, offset);
-    existingWrapper.replaceWith(newWrapper);
-  }
 }
 
 export default async function decorate(block) {
