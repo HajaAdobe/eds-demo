@@ -27,14 +27,6 @@ function createDataRow(table, row, index) {
   table.appendChild(dataRow);
 }
 
-async function updateContent(url, offset) {
-  const existingWrapper = document.querySelector('.table-wrapper');
-  if (existingWrapper) {
-    const newWrapper = await createTableStructure(url, offset);
-    existingWrapper.replaceWith(newWrapper);
-  }
-}
-
 // Function to create table structure with data and pagination
 async function createTableStructure(url, offset = 0, limit = 10) {
   const fullUrl = `${url}?offset=${offset}&limit=${limit}`;
@@ -81,6 +73,14 @@ async function createTableStructure(url, offset = 0, limit = 10) {
   wrapperDiv.appendChild(paginationDiv);
 
   return wrapperDiv;
+}
+
+async function updateContent(url, offset) {
+  const existingWrapper = document.querySelector('.table-wrapper');
+  if (existingWrapper) {
+    const newWrapper = await createTableStructure(url, offset);
+    existingWrapper.replaceWith(newWrapper);
+  }
 }
 
 export default async function decorate(block) {
