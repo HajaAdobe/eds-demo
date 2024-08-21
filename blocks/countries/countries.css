@@ -1,0 +1,35 @@
+.table-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+  border: 1px solid var(--light-color);
+  padding: 8px;
+  text-align: left;
+}
+
+.data-table th {
+  background-color: var(--light-color);
+}
+
+.pagination-controls {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5em;
+}
+
+.pagination-controls button {
+  background-color: var(--link-hover-color);
+}
+
+.pagination-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
