@@ -36,6 +36,7 @@
       min-height: calc(100vh - var(--nav-height));
       display: flex;
       align-items: center;
+      justify-content: center;
     }
 
     main.error .error-number {
@@ -53,10 +54,8 @@
   <header></header>
   <main class="error">
     <div class="section">
-      <svg viewBox="1 0 38 18" class="error-number">
-        <text x="0" y="17">404</text>
-      </svg>
       <h2 class="error-message">Page Not Found</h2>
+      <p>The page you are looking for doesn't exist or an other error occurred.</p>
       <p class="button-container">
         <a href="/" class="button secondary error-button-home">Go home</a>
       </p>

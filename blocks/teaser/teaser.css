@@ -1,0 +1,4 @@
+.teaser-wrapper .teaser {
+    padding: 10px;
+    border: 2px solid var(--color-gray-500);
+}
